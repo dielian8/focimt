@@ -115,7 +115,6 @@ double Taquart::SMTInputData::CountRuptureTime(bool &Result) {
 
     if (Lista.size() > 5) {
       Result = true;
-      //std::sort(Lista.begin(), Lista.end());
       std::sort(Lista.begin(), Lista.end(), Taquart::TimeDistComparator());
 
       const double Average = (Lista[1].Time + Lista[2].Time + Lista[3].Time)
@@ -178,6 +177,7 @@ void Taquart::SMTInputData::Get(unsigned int Index,
     InputLine = InputData[Index];
 }
 
+//---------------------------------------------------------------------------
 void Taquart::SMTInputData::Set(unsigned int Index,
     Taquart::SMTInputLine &InputLine) throw (Taquart::TriEOutOfRange) {
   if (Index >= InputData.size())
