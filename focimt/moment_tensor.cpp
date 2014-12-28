@@ -44,6 +44,8 @@
 
 using namespace std;
 
+#define squared(x) (pow(x,2.0))
+
 // Default values.
 bool DrawStations = true;
 bool DrawAxes = true;
@@ -656,8 +658,8 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    // Produce output file and graphical represntation of the moment tensor
-    // using cairo library.
+    // Produce output file and graphical representation of the moment tensor
+    // using Cairo library.
 
     // Projection type.
     if (Projection.Pos("W")) WulffProjection = true;
@@ -861,6 +863,7 @@ int main(int argc, char* argv[]) {
 
 }
 
+//-----------------------------------------------------------------------------
 void GenerateBallCairo(Taquart::TriCairo_Meca &Meca,
     std::vector<FaultSolutions> &FSList, Taquart::SMTInputData &id,
     Taquart::String Type) {
@@ -899,8 +902,6 @@ void GenerateBallCairo(Taquart::TriCairo_Meca &Meca,
   for (int i = 0; i < 6; i++)
     mt.f[i] = cmt[i];
 
-#define squared(x) (pow(x,2.0))
-
   const double scal =
       sqrt(
           squared(mt.f[0]) + squared(mt.f[1]) + squared(mt.f[2])
@@ -911,14 +912,6 @@ void GenerateBallCairo(Taquart::TriCairo_Meca &Meca,
 
   Taquart::TriCairo_Axis P, T, N;
   Meca.GMT_momten2axe(mt, &T, &N, &P);
-  //P.str = s.PXTR;
-  //P.dip = s.PXPL;
-  //T.str = s.TXTR;
-  //T.dip = s.TXPL;
-  //N.str = s.BXTR;
-  //N.dip = s.BXPL;
-
-  // Draw circle + tensional & compressional parts of the moment tensor.
   Meca.Tensor(T, N, P);
 
   // Draw stations.
@@ -961,8 +954,7 @@ void GenerateBallCairo(Taquart::TriCairo_Meca &Meca,
     Meca.DoubleCouple(s.FIB, s.DLB);
   }
 
-  // if MORE than one solution on the list, plot additiona DC lines.
-
+  // If MORE than one solution on the list, plot additional DC lines.
   if (FSList.size() > 1) {
     for (unsigned int i = 1; i < FSList.size(); i++) {
       Meca.BDCColor = Taquart::TCColor(0.5, 0.5, 0.5, 0.7);
