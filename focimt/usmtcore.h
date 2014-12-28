@@ -99,14 +99,6 @@ namespace Taquart {
     extern int ISTA;
     extern int * ThreadProgress;
 
-    //struct nodal_plane { double str;  double dip;  double rake; };
-    //double zero_360(double str);
-    //DLL_EXP double computed_rake1(nodal_plane NP1);
-    //double computed_rake2(double str1,double dip1,double str2,double dip2,double fault);
-    //DLL_EXP double computed_dip1(nodal_plane NP1);
-    //DLL_EXP double computed_strike1(nodal_plane NP1);
-    //void sincos(double a, double *s, double *c);
-
     void PROGRESS(double Progress, double Max);
     bool ANGGA(void);
     bool JEZ(void);

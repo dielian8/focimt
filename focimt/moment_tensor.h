@@ -39,6 +39,9 @@
 //---------------------------------------------------------------------------
 namespace Taquart {
   //! Norm type used in calculation of the moment tensor solution.
+  /*! Defines norm used in seismic moment tensor inversion.
+   * \ingroup Foci
+   */
   enum NormType {
     ntL1, /*!< L1 norm used. */
     ntL2 /*!< L2 norm used. */
@@ -46,7 +49,7 @@ namespace Taquart {
 
   //! Seismic moment tensor solution type.
   /*! Determines the type of seismic moment tensor.
-   *  \ingroup foci
+   *  \ingroup Foci
    */
   enum SolutionType {
     stFullSolution = 1, /*!< Full solution.*/

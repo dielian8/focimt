@@ -32,12 +32,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
-
 #include <trilib/string.h>
-//#include <registry.hpp>
-//#include "fcore.h"
-//#include "xmlexporter.h"
-//---------------------------------------------------------------------------
 #include "moment_tensor.h"
 
 namespace Taquart {
@@ -114,7 +109,7 @@ namespace Taquart {
        */
       FaultSolution(const FaultSolution &Source);
 
-      //! Assignement operator.
+      //! Assignment operator.
       /*! \param Source Reference to the source FaultSolution structure to copy.
        * \return Reference to the current struture (*this).
        */
@@ -138,7 +133,7 @@ namespace Taquart {
        */
       //void LoadIni(TMemIniFile *const File, String SectionName);
       //! Generate an output text stringlist.
-      /*! This fuction adds seismic moment tensor solution data to the 
+      /*! This function adds seismic moment tensor solution data to the
        *  stringlist object.
        *  For a detailed description on \a TMemIniFile class, see the Borland's
        *  Visual Component Library reference.
@@ -154,8 +149,6 @@ namespace Taquart {
     private:
       void sincos(double a, double *s, double *c);
       Taquart::String SubString(Taquart::String Line, int Start, int End);
-      //double computed_rake2(double str1, double dip1, double str2,
-      //  double dip2,double fault);
 
     protected:
   };

@@ -49,6 +49,10 @@ namespace Taquart {
       const TimeDist& operator=(const TimeDist &Src);
   };
 
+  //! Time-distance comparison structure.
+  /*! Structure used to compare time and distance values.
+   *  \ingroup Foci
+   */
   struct TimeDistComparator {
       bool operator()(const TimeDist&a, const TimeDist& b) {
         return a.Distance < b.Distance;
