@@ -76,6 +76,15 @@ void TransferSolution(Taquart::SolutionType AType,
 }
 
 //---------------------------------------------------------------------------
+double Taquart::UsmtCore::mw(double m0) {
+  double RMAG = 2.0 * alog10(m0) / 3.0 - 6.03;
+  if (RMAG >= 100.0) RMAG = 99.9;
+  if (RMAG < -10.0) RMAG = -9.9;
+  return RMAG;
+
+}
+
+//---------------------------------------------------------------------------
 void USMTCore(Taquart::NormType ANormType, int QualityType,
     Taquart::SMTInputData &InputData, int * const AThreadProgress) {
   int IEXP = 0;
@@ -413,9 +422,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      IF(RMAG.GE.100.) RMAG=99.9
   //      IF(RMAG.LE.-10.) RMAG=-9.9
   EIGGEN(EQQ1, EQQ2, EQQ3, PEXPLO, PCLVD[1], PDBCP[1]);
-  RMAG = 0.6667 * alog10(RM0[1]) - 6.0;
-  if (RMAG >= 100.0) RMAG = 99.9;
-  if (RMAG <= -10.0) RMAG = -9.9;
+  RMAG = mw(RM0[1]);
   MAGN[1] = RMAG;
 
   //      WRITE(RESULT(7),5015) PEXPL,PCLVD(1),PDBCP(1),RMAG
@@ -594,9 +601,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
 
   double DUM = 0.0;
   EIGGEN(EQQ1, EQQ2, EQQ3, DUM, PCLVD[2], PDBCP[2]);
-  RMAG = 0.6667 * alog10(RM0[2]) - 6.0;
-  if (RMAG >= 100.0) RMAG = 99.9;
-  if (RMAG <= -10.0) RMAG = -9.9;
+  RMAG = mw(RM0[2]);
   MAGN[2] = RMAG;
 
   //      WRITE(RESULT(18),5017) PCLVD(2),PDBCP(2),RMAG
@@ -734,9 +739,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      IF(RMAG.GE.100.) RMAG=99.9
   //      IF(RMAG.LE.-10.) RMAG=-9.9
   //      WRITE(RESULT(29),5019) RMAG
-  RMAG = 0.6667 * alog10(RM0[3]) - 6.0;
-  if (RMAG >= 100.0) RMAG = 99.9;
-  if (RMAG <= -10.0) RMAG = -9.9;
+  RMAG = mw(RM0[3]);
   MAGN[3] = RMAG;
 
   // 5019 FORMAT(34X,'DBCP.= 100.0%   M=',F4.1)
@@ -1985,9 +1988,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     //      WRITE(75,5000) RESULT(7)
     EIGGEN(EQQ1, EQQ2, EQQ3, PEXPL[1], PCLVD[1], PDBCP[1]);
     //   EIGGEN_NEW(EQQ1,EQQ2,EQQ3,PEXPL[1],PCLVD[1],PDBCP[1]);
-    RMAG = 0.6667 * alog10(RM0[1]) - 6.0;
-    if (RMAG >= 100.0) RMAG = 99.9;
-    if (RMAG < -10.0) RMAG = -9.9;
+    RMAG = mw(RM0[1]);
     MAGN[1] = RMAG;
 
 #ifdef USMTCORE_DEBUG
@@ -2214,9 +2215,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
   // 5007 FORMAT(18X,'CLVD.=',F6.1,'%   DBCP.=',F6.1,'%   M=',F4.1)
   //      WRITE(75,5000) RESULT(18)
   EIGGEN(EQQ1, EQQ2, EQQ3, DUM, PCLVD[2], PDBCP[2]);
-  RMAG = 0.6667 * alog10(RM0[2]) - 6.0;
-  if (RMAG >= 100.0) RMAG = 99.9;
-  if (RMAG < -10.0) RMAG = -9.9;
+  RMAG = mw(RM0[2]);
   MAGN[2] = RMAG;
 
 #ifdef USMTCORE_DEBUG
@@ -2381,9 +2380,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
   //      WRITE(RESULT(29),5009) RMAG
   // 5009 FORMAT(34X,'DBCP.= 100.0%   M=',F4.1)
   //      WRITE(75,5000) RESULT(29)
-  RMAG = 0.6667 * alog10(RM0[3]) - 6.0;
-  if (RMAG >= 100.0) RMAG = 99.9;
-  if (RMAG < -10.0) RMAG = -9.9;
+  RMAG = mw(RM0[3]);
   MAGN[3] = RMAG;
   PDBCP[3] = 100.0;
   PCLVD[3] = 0.0;

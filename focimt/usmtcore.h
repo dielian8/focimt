@@ -132,6 +132,8 @@ namespace Taquart {
         double &s6, double v[]);
     void ORT(double VE[], double VN[], double DE[], double DN[]);
     void Zero(double * Address, int C);
+
+    double mw(double m0);
   }
 }
 
