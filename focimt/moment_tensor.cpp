@@ -508,7 +508,7 @@ int main(int argc, char* argv[]) {
       // Dump to input file.
       Taquart::SMTInputLine il;
       //sprintf(TempBuffer, "%02d", id);
-      il.Name = Taquart::FormatFloat("%02d", id); /*!< Station name.*/
+      il.Name = Taquart::FormatFloat("%02.0f", id); /*!< Station name.*/
       il.Id = id; /*!< Station id number.*/
       il.Component = "ZZ"; //"ZZ";       /*!< Component.*/
       il.MarkerType = ""; //"p*ons/p*max";      /*!< Type of the marker used.*/
