@@ -32,6 +32,9 @@
 #include "usmtcore.h"
 //---------------------------------------------------------------------------
 
+#define USMT_UPSCALE (1.0e+12)
+#define USMT_DOWNSCALE (1.0e-12)
+
 //---------------------------------------------------------------------------
 using namespace Taquart::UsmtCore;
 using namespace Taquart;
@@ -165,7 +168,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
     //if(PS[i] == 'S' || PS[i] == 's') IW[i] = 1;
     //if(PS[i] == 'H' || PS[i] == 'h') IW[i] = 2;
     ALF = VEL[i];
-    /* DONE  5 -c2.4.14 : Problem z kalibracj¹ (USMTCORE) */
+    /* DONE  5 -c2.4.14 : Problem z kalibracjï¿½ (USMTCORE) */
     HELP = 4.0 * PI * double(RO[i]) * ALF * ALF * ALF * double(R[i]);
 
     //      IF(IW(I).NE.0) GO TO 5
@@ -312,9 +315,9 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      HELP2=ABS(EQM(1)-EQM(3))
   //      HELP3=ABS(EQM(2)-EQM(3))
   EIG3(BB, 0, EQM);
-  EQM[1] = fabs(EQM[1]) * 1.0E-12;
-  EQM[2] = fabs(EQM[2]) * 1.0E-12;
-  EQM[3] = fabs(EQM[3]) * 1.0E-12;
+  EQM[1] = fabs(EQM[1]) * USMT_DOWNSCALE;
+  EQM[2] = fabs(EQM[2]) * USMT_DOWNSCALE;
+  EQM[3] = fabs(EQM[3]) * USMT_DOWNSCALE;
   double HELP1 = fabs(EQM[1] - EQM[2]);
   double HELP2 = fabs(EQM[1] - EQM[3]);
   double HELP3 = fabs(EQM[2] - EQM[3]);
@@ -327,8 +330,8 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   double EU = sqrt(0.5 * (EQM[1] * EQM[1] + EQM[2] * EQM[2] + EQM[3] * EQM[3]));
   double EC = Taquart::amax1(HELP1, HELP2);
   EC = amax1(EC, HELP3);
-  RMT[1] = amax1(EC, EU) * 1.0e+12;
-  RM0[1] = amin1(EC, EU) * 1.0e+12;
+  RMT[1] = amax1(EC, EU) * USMT_UPSCALE;
+  RM0[1] = amin1(EC, EU) * USMT_UPSCALE;
 
   //C     Error calculation:
   //      DO 401 I=1,N
@@ -373,8 +376,8 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
         //      DHELP1=DBLE(AA(K,I)-RM(I,1))*1.E-12
         //      DHELP2=DBLE(AA(K,J)-RM(J,1))*1.E-12
         //  405 COV=COV+DHELP1*DHELP2
-        double DHELP1 = (AA[k][i] - RM[i][1]) * 1.0E-12;
-        double DHELP2 = (AA[k][j] - RM[j][1]) * 1.0E-12;
+        double DHELP1 = (AA[k][i] - RM[i][1]) * USMT_DOWNSCALE;
+        double DHELP2 = (AA[k][j] - RM[j][1]) * USMT_DOWNSCALE;
         COV = COV + DHELP1 * DHELP2;
       }
     }
@@ -386,7 +389,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      SIG=SNGL(DSQRT(DHELP1))*1.E+12
   COV = COV / 36.0;
   double DHELP1 = fabs(COV) / double(N - 1);
-  double SIG = sqrt(DHELP1) * 1.0e+12;
+  double SIG = sqrt(DHELP1) * USMT_UPSCALE;
   RMERR[1] = SIG;
 
   //C     Output:
@@ -503,17 +506,17 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      RM0(2)=AMIN1(EC,EU)*1.E+12
 
   EIG3(BB, 0, EQM);
-  EQM[1] = fabs(EQM[1]) * 1.0E-12;
-  EQM[2] = fabs(EQM[2]) * 1.0E-12;
-  EQM[3] = fabs(EQM[3]) * 1.0E-12;
+  EQM[1] = fabs(EQM[1]) * USMT_DOWNSCALE;
+  EQM[2] = fabs(EQM[2]) * USMT_DOWNSCALE;
+  EQM[3] = fabs(EQM[3]) * USMT_DOWNSCALE;
   HELP1 = fabs(EQM[1] - EQM[2]);
   HELP2 = fabs(EQM[1] - EQM[3]);
   HELP3 = fabs(EQM[2] - EQM[3]);
   EU = sqrt(0.5 * (EQM[1] * EQM[1] + EQM[2] * EQM[2] + EQM[3] * EQM[3]));
   EC = amax1(HELP1, HELP2);
   EC = amax1(EC, HELP3);
-  RMT[2] = amax1(EC, EU) * 1.0E+12;
-  RM0[2] = amin1(EC, EU) * 1.0E+12;
+  RMT[2] = amax1(EC, EU) * USMT_UPSCALE;
+  RM0[2] = amin1(EC, EU) * USMT_UPSCALE;
 
   //C     Error calculation:
   //      DO 2401 I=1,N
@@ -558,8 +561,8 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   for (int i = 1; i <= 6; i++) {
     for (int j = 1; j <= 6; j++) {
       for (int k = 1; k <= N; k++) {
-        double DHELP1 = (AA[k][i] - RM[i][2]) * 1.0E-12;
-        double DHELP2 = (AA[k][j] - RM[j][2]) * 1.0E-12;
+        double DHELP1 = (AA[k][i] - RM[i][2]) * USMT_DOWNSCALE;
+        double DHELP2 = (AA[k][j] - RM[j][2]) * USMT_DOWNSCALE;
         COV = COV + DHELP1 * DHELP2;
       }
     }
@@ -570,7 +573,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      SIG=SNGL(DSQRT(DHELP1))*1.E+12
   COV = COV / 36.0;
   DHELP1 = fabs(COV) / double(N - 1);
-  SIG = sqrt(DHELP1) * 1.0e+12;
+  SIG = sqrt(DHELP1) * USMT_UPSCALE;
   RMERR[2] = SIG;
 
   //C     Output:
@@ -648,15 +651,15 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   EQQ1 = EQM[1];
   EQQ2 = EQM[2];
   EQQ3 = EQM[3];
-  EQM[1] = fabs(EQM[1]) * 1.0E-12;
-  EQM[2] = fabs(EQM[2]) * 1.0E-12;
-  EQM[3] = fabs(EQM[3]) * 1.0E-12;
+  EQM[1] = fabs(EQM[1]) * USMT_DOWNSCALE;
+  EQM[2] = fabs(EQM[2]) * USMT_DOWNSCALE;
+  EQM[3] = fabs(EQM[3]) * USMT_DOWNSCALE;
   HELP1 = fabs(EQM[1] - EQM[2]);
   HELP2 = fabs(EQM[1] - EQM[3]);
   HELP3 = fabs(EQM[2] - EQM[3]);
   EC = amax1(HELP1, HELP2);
   EC = amax1(EC, HELP3);
-  RMT[3] = EC * 1.0E+12;
+  RMT[3] = EC * USMT_UPSCALE;
   RM0[3] = RMT[3];
 
   //C     Error calculation:
@@ -700,8 +703,8 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   for (int i = 1; i <= 6; i++) {
     for (int j = 1; j <= 6; j++) {
       for (int k = 1; k <= N; k++) {
-        double DHELP1 = (AA[k][i] - RM[i][3]) * 1.0E-12;
-        double DHELP2 = (AA[k][j] - RM[j][3]) * 1.0E-12;
+        double DHELP1 = (AA[k][i] - RM[i][3]) * USMT_DOWNSCALE;
+        double DHELP2 = (AA[k][j] - RM[j][3]) * USMT_DOWNSCALE;
         COV = COV + DHELP1 * DHELP2;
       }
     }
@@ -712,7 +715,7 @@ void Taquart::UsmtCore::MOM1(int &IEXP, int QualityType) {
   //      SIG=SNGL(DSQRT(DHELP1))*1.E+12
   COV = COV / 36.0;
   DHELP1 = fabs(COV) / double(N - 1);
-  SIG = sqrt(DHELP1) * 1.0e+12;
+  SIG = sqrt(DHELP1) * USMT_UPSCALE;
   RMERR[3] = SIG;
 
   //C     Output:
@@ -1484,9 +1487,9 @@ void Taquart::UsmtCore::XTRINF(int &ICOND, int LNORM, double Moment0[],
     }
 
     /* DONE 5 -c2.4.13 :
-     Oblicz wartoœci RAKE przy pomocy metody z programu PSMECA. Korekta
-     krytycznego b³êdu a¿ do wersji 2.4.13 dotycz¹ca b³êdnej wartoœci rake
-     (nie mia³a wp³ywu na rozwi¹zanie graficzne tensora, tylko na wartoœæ
+     Oblicz wartoï¿½ci RAKE przy pomocy metody z programu PSMECA. Korekta
+     krytycznego bï¿½ï¿½du aï¿½ do wersji 2.4.13 dotyczï¿½ca bï¿½ï¿½dnej wartoï¿½ci rake
+     (nie miaï¿½a wpï¿½ywu na rozwiï¿½zanie graficzne tensora, tylko na wartoï¿½ï¿½
      rake w plikach wynikowych).*/
 
     /*
@@ -1681,8 +1684,8 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     //      HELP=4.*PI*FLOAT(RO(I))*ALF*ALF*ALF*FLOAT(R(I))*TROZ*1.E-12
     ALF = VEL[i];
 
-    /* DONE  5 -c2.4.14 : Problem z kalibracj¹ (USMTCORE) */
-    HELP = 4.0 * PI * double(RO[i]) * ALF * ALF * ALF * double(R[i]) * 1.0e-12;
+    /* DONE  5 -c2.4.14 : Problem z kalibracjï¿½ (USMTCORE) */
+    HELP = 4.0 * PI * double(RO[i]) * ALF * ALF * ALF * double(R[i]) * USMT_DOWNSCALE;
 
     //      IF(IW(I).NE.0) GO TO 5
     if (IW[i] == 0) {
@@ -1816,7 +1819,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     for (int i = 1; i <= 6; i++) {
       B[i] = 0.0;
       for (int j = 1; j <= N; j++) {
-        B[i] = B[i] + A[j][i] * U[j] * 1.0e+12;
+        B[i] = B[i] + A[j][i] * U[j] * USMT_UPSCALE;
       }
     }
 
@@ -1852,9 +1855,9 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     EQQ1 = EQM[1];
     EQQ2 = EQM[2];
     EQQ3 = EQM[3];
-    EQM[1] = fabs(EQM[1]) * 1.0E-12;
-    EQM[2] = fabs(EQM[2]) * 1.0E-12;
-    EQM[3] = fabs(EQM[3]) * 1.0E-12;
+    EQM[1] = fabs(EQM[1]) * USMT_DOWNSCALE;
+    EQM[2] = fabs(EQM[2]) * USMT_DOWNSCALE;
+    EQM[3] = fabs(EQM[3]) * USMT_DOWNSCALE;
     HELP1 = fabs(EQM[1] - EQM[2]);
     HELP2 = fabs(EQM[1] - EQM[3]);
     HELP3 = fabs(EQM[2] - EQM[3]);
@@ -1867,8 +1870,8 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     EU = sqrt(0.5 * (EQM[1] * EQM[1] + EQM[2] * EQM[2] + EQM[3] * EQM[3]));
     EC = amax1(HELP1, HELP2);
     EC = amax1(EC, HELP3);
-    RMT[1] = amax1(EC, EU) * 1.0E+12;
-    RM0[1] = amin1(EC, EU) * 1.0E+12;
+    RMT[1] = amax1(EC, EU) * USMT_UPSCALE;
+    RM0[1] = amin1(EC, EU) * USMT_UPSCALE;
 
     //C     Covariance calculation:
     //      DO 401 I=1,N
@@ -1881,10 +1884,10 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
       // Calculate theoretical displacement.
       UTH[i] = 0.0f;
       for (int j = 1; j <= 6; j++)
-        UTH[i] += A[i][j] * RM[j][1] * 1.0e-12;
+        UTH[i] += A[i][j] * RM[j][1] * USMT_DOWNSCALE;
 
       for (int j = 1; j <= 6; j++)
-        EPS = EPS - A[i][j] * RM[j][1] * 1.0e-12;
+        EPS = EPS - A[i][j] * RM[j][1] * USMT_DOWNSCALE;
 
       //      SAI22=DBLE(0.)
       //      DO 403 J=1,6
@@ -1899,7 +1902,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
       //      DO 404 J=1,6
       //  404 AA(I,J)=EPS*(A(I,J)/SAI2)*1.E+12
       for (int j = 1; j <= 6; j++)
-        AA[i][j] = EPS * (A[i][j] / SAI2) * 1.0e+12;
+        AA[i][j] = EPS * (A[i][j] / SAI2) * USMT_UPSCALE;
 
       //      DO 401 J=1,6
       //      AA(I,J)=AA(I,J)+RM(J,1)
@@ -2054,7 +2057,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
   for (int i = 1; i <= 5; i++) {
     B[i] = 0.0;
     for (int j = 1; j <= N; j++) {
-      B[i] = B[i] + H[j][i] * U[j] * 1.0e+12;
+      B[i] = B[i] + H[j][i] * U[j] * USMT_UPSCALE;
     }
   }
 
@@ -2093,9 +2096,9 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
   EQQ1 = EQM[1];
   EQQ2 = EQM[2];
   EQQ3 = EQM[3];
-  EQM[1] = fabs(EQM[1]) * 1.0E-12;
-  EQM[2] = fabs(EQM[2]) * 1.0E-12;
-  EQM[3] = fabs(EQM[3]) * 1.0E-12;
+  EQM[1] = fabs(EQM[1]) * USMT_DOWNSCALE;
+  EQM[2] = fabs(EQM[2]) * USMT_DOWNSCALE;
+  EQM[3] = fabs(EQM[3]) * USMT_DOWNSCALE;
   HELP1 = fabs(EQM[1] - EQM[2]);
   HELP2 = fabs(EQM[1] - EQM[3]);
   HELP3 = fabs(EQM[2] - EQM[3]);
@@ -2108,8 +2111,8 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
   EU = sqrt(0.5 * (EQM[1] * EQM[1] + EQM[2] * EQM[2] + EQM[3] * EQM[3]));
   EC = amax1(HELP1, HELP2);
   EC = amax1(EC, HELP3);
-  RMT[2] = amax1(EC, EU) * 1.0E+12;
-  RM0[2] = amin1(EC, EU) * 1.0E+12;
+  RMT[2] = amax1(EC, EU) * USMT_UPSCALE;
+  RM0[2] = amin1(EC, EU) * USMT_UPSCALE;
 
   //C     Error calculation:
   //      DO 2401 I=1,N
@@ -2119,7 +2122,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     // 2406 EPS=EPS-A(I,J)*RM(J,2)*1.E-12
     EPS = U[i];
     for (int j = 1; j <= 6; j++)
-      EPS = EPS - A[i][j] * RM[j][2] * 1.0e-12;
+      EPS = EPS - A[i][j] * RM[j][2] * USMT_DOWNSCALE;
 
     //      SAI22=DBLE(0.)
     //      DO 2403 J=1,6
@@ -2134,7 +2137,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     //      DO 2404 J=1,6
     // 2404 AA(I,J)=EPS*(A(I,J)/SAI2)*1.E+12
     for (int j = 1; j <= 6; j++)
-      AA[i][j] = EPS * (A[i][j] / SAI2) * 1.0e+12;
+      AA[i][j] = EPS * (A[i][j] / SAI2) * USMT_UPSCALE;
 
     //      DO 2401 J=1,6
     //      AA(I,J)=AA(I,J)+RM(J,2)
@@ -2290,7 +2293,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     // 3406 EPS=EPS-A(I,J)*RM(J,3)*1.E-12
     EPS = U[i];
     for (int j = 1; j <= 6; j++)
-      EPS = EPS - A[i][j] * RM[j][3] * 1.0e-12;
+      EPS = EPS - A[i][j] * RM[j][3] * USMT_DOWNSCALE;
 
     //      SAI22=DBLE(0.)
     //      DO 3403 J=1,6
@@ -2305,7 +2308,7 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     //      DO 3404 J=1,6
     // 3404 AA(I,J)=EPS*(A(I,J)/SAI2)*1.E+12
     for (int j = 1; j <= 6; j++)
-      AA[i][j] = EPS * (A[i][j] / SAI2) * 1.0e+12;
+      AA[i][j] = EPS * (A[i][j] / SAI2) * USMT_UPSCALE;
 
     //      DO 3401 J=1,6
     //      AA(I,J)=AA(I,J)+RM(J,3)
@@ -2912,22 +2915,22 @@ void Taquart::UsmtCore::BETTER(double &RMY, double &RMZ, double &RM0,
   //      EC=AMAX1(EC,HELP3)
   //      RMT=EC*1.E+12
   //      RM0=RMT
-  EQM[1] = fabs(EQM[1]) * 1.0e-12;
-  EQM[2] = fabs(EQM[2]) * 1.0e-12;
-  EQM[3] = fabs(EQM[3]) * 1.0e-12;
+  EQM[1] = fabs(EQM[1]) * USMT_DOWNSCALE;
+  EQM[2] = fabs(EQM[2]) * USMT_DOWNSCALE;
+  EQM[3] = fabs(EQM[3]) * USMT_DOWNSCALE;
   HELP1 = fabs(EQM[1] - EQM[2]);
   HELP2 = fabs(EQM[1] - EQM[3]);
   HELP3 = fabs(EQM[2] - EQM[3]);
   EC = amax1(HELP1, HELP2);
   EC = amax1(EC, HELP3);
-  RMT = EC * 1.0e+12;
+  RMT = EC * USMT_UPSCALE;
   RM0 = RMT;
 
   //      do 3001 i=1,n
   for (int i = 1; i <= N; i++) {
     //      do 3103 j=1,3
     // 3103 c(j,i)=dble(0.)
-    for (int j = 1; j <= 6; j++) //???? Poprawka b³êdu!
+    for (int j = 1; j <= 6; j++) //???? Poprawka bï¿½ï¿½du!
       C[j][i] = 0.0;
 
     //      do 3001 j=1,3
@@ -4609,7 +4612,7 @@ void Taquart::UsmtCore::GSOLA(double x[], int &IEXP) {
             //      CALL RENUM(TRY,VAL,IX,J1,J2,J3,J4)
             //      DO 312 i=1,5
             //  312 x(i)=SNGL(XTRY(I))
-            if (tryy <= val) /* ONE : poprawiony b³¹d 2006.10.05 */
+            if (tryy <= val) /* ONE : poprawiony bï¿½ï¿½d 2006.10.05 */
             {
               RENUM(tryy, val, ix, j1, j2, j3, j4);
               for (int i = 1; i <= 5; i++)
@@ -4715,7 +4718,7 @@ void Taquart::UsmtCore::GSOLA(double x[], int &IEXP) {
     //      CALL POSTEP(METH,JTER,J7)
     //SIZE = xhi[1] - xlo[1];
     iter++;
-    xtry[1] = 0.0; /* ONE : poprawiony b³¹d 2006.10.05 */
+    xtry[1] = 0.0; /* ONE : poprawiony bï¿½ï¿½d 2006.10.05 */
     //POSTEP(METH,jter,j7);
 
     //      do 403 j1=1,7
