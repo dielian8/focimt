@@ -1112,8 +1112,8 @@ void Taquart::UsmtCore::XTRINF(int &ICOND, int LNORM, double Moment0[],
   //      PI=4.*ATAN(1.)
   double SQR2 = sqrt(2.0);
   double PI = 4.0 * atan(1.0);
-  double B[6 + 1];
-  Zero(B, 6 + 1);
+  double B[7];
+  Zero(B, 7);
   double V[4][4][4];
   Zero(&V[0][0][0], 64);
   double EQM[4];
