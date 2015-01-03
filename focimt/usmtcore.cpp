@@ -3909,10 +3909,10 @@ void Taquart::UsmtCore::GSOL5(double x[], int &IEXP) {
   //      dimension x(5),ix(5)
   //      double precision xlo(5),xhi(5),xstep(5),six,size,xtry(5),VAL,TRY
   //      DATA SIX,METH/6.D+0,2/
-  double xlo[7], xhi[7], xstep[7], six = 6.0, xtry[7], VAL = 0.0,
+  double xlo[8], xhi[8], xstep[8], six = 6.0, xtry[8], VAL = 0.0,
       TRY = 0.0;
   //int METH = 2;
-  int ix[5 + 1];
+  int ix[7];
 
   //      IF((IEXP.LT.10).OR.(IEXP.GT.30)) IEXP=20
   //      iter=0
