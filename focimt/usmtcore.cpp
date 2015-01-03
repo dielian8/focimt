@@ -1008,7 +1008,7 @@ void Taquart::UsmtCore::EIGGEN_NEW(double e1, double e2, double e3, double &iso,
 
   const double ff = -v3 / v1;
   iso = trace;
-  clvd = 2.0 * v1 * ff; /* TODO 5 -c3.4.2 : Correction of the error, now it is according to Jost & Hermann */
+  clvd = v1 * ff;
   dbcp = fabs(v1 * (1.0 - 2.0 * ff));
   const double s = fabs(iso) + fabs(clvd) + fabs(dbcp);
 
