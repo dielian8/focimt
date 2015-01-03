@@ -1113,8 +1113,8 @@ void Taquart::UsmtCore::XTRINF(int &ICOND, int LNORM, double Moment0[],
   //      PI=4.*ATAN(1.)
   double SQR2 = sqrt(2.0);
   double PI = 4.0 * atan(1.0);
-  double B[6];
-  Zero(B, 6);
+  double B[6 + 1];
+  Zero(B, 6 + 1);
   double V[4][4][4];
   Zero(&V[0][0][0], 64);
   double EQM[4];
@@ -3607,7 +3607,7 @@ bool Taquart::UsmtCore::JEZ(void) {
   //      DIMENSION NDAE(9),DAE(212,3)
   //      DATA FSTCLL,NDAE/.TRUE.,2*36,2*32,2*24,16,8,4/
 
-  bool USEDAE[213];
+  bool USEDAE[212 + 1];
   double DAE[212 + 1][3 + 1];
   Zero(&DAE[0][0], 213 * 4);
 
@@ -3649,7 +3649,7 @@ bool Taquart::UsmtCore::JEZ(void) {
 
   //   10 DO 3 I=1,212
   //    3 USEDAE(I)=.TRUE.
-  for (int i = 1; i <= 213; i++)
+  for (int i = 1; i <= 212; i++)
     USEDAE[i] = true;
 
   //      NLIVE=212
@@ -3910,7 +3910,7 @@ void Taquart::UsmtCore::GSOL5(double x[], int &IEXP) {
   //      dimension x(5),ix(5)
   //      double precision xlo(5),xhi(5),xstep(5),six,size,xtry(5),VAL,TRY
   //      DATA SIX,METH/6.D+0,2/
-  double xlo[5 + 1], xhi[5 + 1], xstep[5 + 1], six = 6.0, xtry[5], VAL = 0.0,
+  double xlo[5 + 1], xhi[5 + 1], xstep[5 + 1], six = 6.0, xtry[5 + 1], VAL = 0.0,
       TRY = 0.0;
   //int METH = 2;
   int ix[5 + 1];
