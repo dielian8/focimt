@@ -3606,8 +3606,8 @@ bool Taquart::UsmtCore::JEZ(void) {
   //      DIMENSION NDAE(9),DAE(212,3)
   //      DATA FSTCLL,NDAE/.TRUE.,2*36,2*32,2*24,16,8,4/
 
-  bool USEDAE[212 + 1];
-  double DAE[212 + 1][3 + 1];
+  bool USEDAE[213];
+  double DAE[213][4];
   Zero(&DAE[0][0], 213 * 4);
 
   //      IOK=.TRUE.
@@ -3909,7 +3909,7 @@ void Taquart::UsmtCore::GSOL5(double x[], int &IEXP) {
   //      dimension x(5),ix(5)
   //      double precision xlo(5),xhi(5),xstep(5),six,size,xtry(5),VAL,TRY
   //      DATA SIX,METH/6.D+0,2/
-  double xlo[5 + 1], xhi[5 + 1], xstep[5 + 1], six = 6.0, xtry[5 + 1], VAL = 0.0,
+  double xlo[7], xhi[7], xstep[7], six = 6.0, xtry[7], VAL = 0.0,
       TRY = 0.0;
   //int METH = 2;
   int ix[5 + 1];
