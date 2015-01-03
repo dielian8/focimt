@@ -1006,6 +1006,9 @@ void Taquart::UsmtCore::EIGGEN_NEW(double e1, double e2, double e3, double &iso,
     v3 = e3 - trace;
   }
 
+  //<--- This part of the code calculates moment tensor components according to
+  //     Jost and Herrmann, 1989 approach. This is not in agreement with the
+  //     methodology provided by Vavrycuk.
   const double ff = -v3 / v1;
   iso = trace;
   clvd = v1 * ff;
@@ -1015,6 +1018,7 @@ void Taquart::UsmtCore::EIGGEN_NEW(double e1, double e2, double e3, double &iso,
   iso = iso / s * 100.0;
   clvd = clvd / s * 100.0;
   dbcp = dbcp / s * 100.0;
+  //----> End of MT component calculation according to Jost and Herrmann.
 }
 
 //-----------------------------------------------------------------------------
