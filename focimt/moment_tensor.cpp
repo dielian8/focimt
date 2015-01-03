@@ -247,8 +247,6 @@ int main(int argc, char* argv[]) {
             else {
               AmpFactor = Temp.ToDouble();
             }
-
-            //std::cout << "Amplitude factor: " << AmpFactor << std::endl;
             break;
           case 11:
             // Draw fault plane solutions only.
@@ -407,7 +405,7 @@ int main(int argc, char* argv[]) {
       return 0;
     }
 
-    // Draw fault only and return to dos...
+    // Draw fault only and return to the system...
     if (DrawFaultOnly) {
       // Read strike, dip and rake.
       Taquart::String temp;
@@ -481,7 +479,7 @@ int main(int argc, char* argv[]) {
       return 0;
     }
 
-    // Prepare processing structs.
+    // Prepare processing structure.
     Taquart::NormType InversionNormType =
         (NormType == "L2") ? Taquart::ntL2 : Taquart::ntL1;
     int QualityType = 1;
@@ -618,7 +616,7 @@ int main(int argc, char* argv[]) {
       }
     }
     else {
-      // Perform additional jacknife tests.
+      // Perform additional Jacknife tests.
       if (JacknifeTest) {
         const Taquart::SMTInputData fd = InputData;
         const unsigned int Count = InputData.Count();
