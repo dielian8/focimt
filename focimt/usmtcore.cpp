@@ -30,7 +30,6 @@
 #include <trilib/fortranmath.h>
 #include <trilib/georoutines.h>
 #include "usmtcore.h"
-//---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
 using namespace Taquart::UsmtCore;
