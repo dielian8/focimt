@@ -261,7 +261,7 @@ int main(int argc, char* argv[]) {
                 Taquart::String(listOpts.getArgs(switchInt).c_str()).Trim();
             break;
           case 13:
-            std::cout << "Rev. 3.0.2, 2014.11.20\n"
+            std::cout << "Rev. 3.1.0, 2015.01.29\n"
                 "(c) 2011-2015 Grzegorz Kwiatek, GPL license applies.\n";
             break;
         }
