@@ -55,6 +55,9 @@ bool WulffProjection = false;
 bool LowerHemisphere = true;
 
 //-----------------------------------------------------------------------------
+void SetFaultSolution(Taquart::FaultSolution &fu, double M11, double M12, double M13,
+    double M22,  double M23, double M33, double strike, double dip, double rake);
+
 class FaultSolutions {
   public:
     char Type;
@@ -317,34 +320,13 @@ int main(int argc, char* argv[]) {
 
       FaultSolutions fs;
       Taquart::FaultSolution fu;
-      Taquart::nodal_plane NP;
 
       fs.Type = 'N';
       fs.Channel = 0;
-
-      fu.M[1][1] = M11;
-      fu.M[1][2] = M12;
-      fu.M[1][3] = M13;
-      fu.M[2][1] = M12;
-      fu.M[2][2] = M22;
-      fu.M[2][3] = M23;
-      fu.M[3][1] = M13;
-      fu.M[3][2] = M23;
-      fu.M[3][3] = M33;
-      fu.FIA = strike;
-      fu.DLA = dip;
-      fu.RAKEA = rake;
-      NP.str = strike;
-      NP.dip = dip;
-      NP.rake = rake;
-      fu.FIB = Taquart::computed_strike1(NP);
-      fu.DLB = Taquart::computed_dip1(NP);
-      fu.RAKEB = Taquart::computed_rake1(NP);
-
+      SetFaultSolution(fu, M11,M12,M13,M22,M23,M33,strike,dip,rake);
       fs.FullSolution = fu;
       fs.TraceNullSolution = fu;
       fs.DoubleCoupleSolution = fu;
-
       FSList.push_back(fs);
 
       while (FaultString.Length()) {
@@ -371,29 +353,10 @@ int main(int argc, char* argv[]) {
 
         fs.Type = 'J';
         fs.Channel = 0;
-        fu.M[1][1] = M11;
-        fu.M[1][2] = M12;
-        fu.M[1][3] = M13;
-        fu.M[2][1] = M12;
-        fu.M[2][2] = M22;
-        fu.M[2][3] = M23;
-        fu.M[3][1] = M13;
-        fu.M[3][2] = M23;
-        fu.M[3][3] = M33;
-        fu.FIA = strike;
-        fu.DLA = dip;
-        fu.RAKEA = rake;
-        NP.str = strike;
-        NP.dip = dip;
-        NP.rake = rake;
-        fu.FIB = Taquart::computed_strike1(NP);
-        fu.DLB = Taquart::computed_dip1(NP);
-        fu.RAKEB = Taquart::computed_rake1(NP);
-
+        SetFaultSolution(fu, M11,M12,M13,M22,M23,M33,strike,dip,rake);
         fs.FullSolution = fu;
         fs.TraceNullSolution = fu;
         fs.DoubleCoupleSolution = fu;
-
         FSList.push_back(fs);
       }
 
@@ -441,34 +404,13 @@ int main(int argc, char* argv[]) {
 
       FaultSolutions fs;
       Taquart::FaultSolution fu;
-      Taquart::nodal_plane NP;
 
       fs.Type = 'N';
       fs.Channel = 0;
-
-      fu.M[1][1] = M11;
-      fu.M[1][2] = M12;
-      fu.M[1][3] = M13;
-      fu.M[2][1] = M12;
-      fu.M[2][2] = M22;
-      fu.M[2][3] = M23;
-      fu.M[3][1] = M13;
-      fu.M[3][2] = M23;
-      fu.M[3][3] = M33;
-      fu.FIA = strike;
-      fu.DLA = dip;
-      fu.RAKEA = rake;
-      NP.str = strike;
-      NP.dip = dip;
-      NP.rake = rake;
-      fu.FIB = Taquart::computed_strike1(NP);
-      fu.DLB = Taquart::computed_dip1(NP);
-      fu.RAKEB = Taquart::computed_rake1(NP);
-
+      SetFaultSolution(fu, M11,M12,M13,M22,M23,M33,strike,dip,rake);
       fs.FullSolution = fu;
       fs.TraceNullSolution = fu;
       fs.DoubleCoupleSolution = fu;
-
       FSList.push_back(fs);
 
       Taquart::String OutName = FilenameOut + ".png";
@@ -860,6 +802,33 @@ int main(int argc, char* argv[]) {
   }
 
 }
+
+//-----------------------------------------------------------------------------
+void SetFaultSolution(Taquart::FaultSolution &fu, double M11, double M12, double M13,
+    double M22,  double M23, double M33, double strike, double dip, double rake)
+{
+  Taquart::nodal_plane NP;
+  fu.M[1][1] = M11;
+  fu.M[1][2] = M12;
+  fu.M[1][3] = M13;
+  fu.M[2][1] = M12;
+  fu.M[2][2] = M22;
+  fu.M[2][3] = M23;
+  fu.M[3][1] = M13;
+  fu.M[3][2] = M23;
+  fu.M[3][3] = M33;
+  fu.FIA = strike;
+  fu.DLA = dip;
+  fu.RAKEA = rake;
+  NP.str = strike;
+  NP.dip = dip;
+  NP.rake = rake;
+  fu.FIB = Taquart::computed_strike1(NP);
+  fu.DLB = Taquart::computed_dip1(NP);
+  fu.RAKEB = Taquart::computed_rake1(NP);
+}
+
+
 
 //-----------------------------------------------------------------------------
 void GenerateBallCairo(Taquart::TriCairo_Meca &Meca,
