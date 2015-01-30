@@ -87,6 +87,7 @@ int main(int argc, char* argv[]) {
   try {
     Taquart::String FilenameIn;
     Taquart::String FilenameOut;
+    Taquart::String FilenameVelocity;
     unsigned int N = 14;
 
     Options listOpts;
@@ -179,6 +180,10 @@ int main(int argc, char* argv[]) {
             "    Arguments: strike/dip/rake[:s1/d1/r1][:s2/d2/r2]...      \n"
             "                                                                               \n",
         true);
+    listOpts.addOption("m", "model",
+        "Velocity model file (with extension)                 \n\n"
+            "    Velocity model in hypo71 format. Forces different input file scheme.       \n",
+        true);
     listOpts.addOption("v", "version", "Display version number");
 
     Taquart::String SolutionTypes = "D";
@@ -191,6 +196,7 @@ int main(int argc, char* argv[]) {
     bool NoiseTest = false;
     bool DrawFaultOnly = false;
     bool DrawFaultsOnly = false;
+    bool VelocityModel = false;
     double AmpFactor = 1.0f;
     unsigned int AmplitudeN = 100;
     Taquart::String Temp;
@@ -261,6 +267,12 @@ int main(int argc, char* argv[]) {
                 Taquart::String(listOpts.getArgs(switchInt).c_str()).Trim();
             break;
           case 13:
+            // Use 1D velocity model from a file (forces different formatting of input file)
+            VelocityModel = true;
+            FilenameVelocity = Taquart::String(
+                listOpts.getArgs(switchInt).c_str()).Trim();
+            break;
+          case 14:
             std::cout << "Rev. 3.1.0, 2015.01.29\n"
                 "(c) 2011-2015 Grzegorz Kwiatek, GPL license applies.\n";
             break;
@@ -281,6 +293,11 @@ int main(int argc, char* argv[]) {
     else if (FilenameOut.Length() == 0
         && (DrawFaultOnly == true || DrawFaultsOnly == true)) {
       FilenameOut = "default";
+    }
+
+    if (VelocityModel) {
+      // Check if velocity model exists and read it.
+      // TODO: Velocity model reading routine.
     }
 
     // Draw fault only and return to dos...
@@ -494,39 +511,42 @@ int main(int argc, char* argv[]) {
     // Load input data
     std::ifstream InputFile;
     InputFile.open(FilenameIn.c_str());
-    //char TempBuffer[100];
-    for (unsigned int i = 0; i < N; i++) {
-      InputFile >> id;
-      InputFile >> duration;
-      InputFile >> displacement;
-      InputFile >> azimuth;
-      InputFile >> takeoff;
-      InputFile >> velocity;
-      InputFile >> distance;
-      InputFile >> density;
+    if (VelocityModel) {
+      // Reading formatted input file (velocity model format).
+      // TODO: Reading routine.
+    }
+    else {
+      // Read formatted input file (standard foci-mt format)
+      for (unsigned int i = 0; i < N; i++) {
+        InputFile >> id;
+        InputFile >> duration;
+        InputFile >> displacement;
+        InputFile >> azimuth;
+        InputFile >> takeoff;
+        InputFile >> velocity;
+        InputFile >> distance;
+        InputFile >> density;
 
-      // Dump to input file.
-      Taquart::SMTInputLine il;
-      //sprintf(TempBuffer, "%02d", id);
-      il.Name = Taquart::FormatFloat("%02.0f", id); /*!< Station name.*/
-      il.Id = id; /*!< Station id number.*/
-      il.Component = "ZZ"; //"ZZ";       /*!< Component.*/
-      il.MarkerType = ""; //"p*ons/p*max";      /*!< Type of the marker used.*/
-      il.Start = 0.0; //tstart;;           /*!< Start time [s].*/
-      il.End = duration; //tend;;             /*!< End time [s].*/
-      il.Duration = duration; /*!< Duration of signal [s].*/
-      il.Displacement = displacement; /*!< Displacement [m]. */
-      il.Incidence = 0; //incidence;       /*!< Angle of incidence [deg]. */
-      il.Azimuth = azimuth; /*!< Azimuth between station and source [deg]. */
-      il.TakeOff = takeoff; /*!< Takeoff angle [deg]. */
-      il.Distance = distance; /*!< Distance between station and source [m]. */
-      il.Density = density; /*!< Density [km/m**3]. */
-      il.Velocity = velocity; /*!< Average velocity [m/s]. */
-      il.PickActive = true;
-      il.ChannelActive = true;
-
-      InputData.Add(il);
-
+        // Prepare input line structure.
+        Taquart::SMTInputLine il;
+        il.Name = Taquart::FormatFloat("%02.0f", id); /*!< Station name.*/
+        il.Id = id; /*!< Station id number.*/
+        il.Component = "ZZ"; //"ZZ";       /*!< Component.*/
+        il.MarkerType = ""; //"p*ons/p*max";      /*!< Type of the marker used.*/
+        il.Start = 0.0; //tstart;;           /*!< Start time [s].*/
+        il.End = duration; //tend;;             /*!< End time [s].*/
+        il.Duration = duration; /*!< Duration of first P-wave velocity pulse [s].*/
+        il.Displacement = displacement; /*!< Amplitude of first P-wave displacement pulse [m]. */
+        il.Incidence = 0; //incidence;       /*!< Angle of incidence [deg] (not used here) */
+        il.Azimuth = azimuth; /*!< Azimuth between station and source [deg]. */
+        il.TakeOff = takeoff; /*!< Takeoff angle measured from bottom [deg]. */
+        il.Distance = distance; /*!< Distance between station and source [m]. */
+        il.Density = density; /*!< Density in the source [km/m**3]. */
+        il.Velocity = velocity; /*!< Velocity in the source [m/s]. */
+        il.PickActive = true;
+        il.ChannelActive = true;
+        InputData.Add(il);
+      }
     }
     InputFile.close();
     bool Result = false;
