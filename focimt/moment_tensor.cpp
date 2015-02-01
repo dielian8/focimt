@@ -42,7 +42,6 @@
 #include "usmtcore.h"
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 #define TT1D_RAYTRACE_MAXLAY (20)
 #define TT1D_MAXT (100000.0)
@@ -544,7 +543,7 @@ int main(int argc, char* argv[]) {
     char id[50];
     double duration = 0.0, displacement = 0.0;
     double azimuth = 0.0, takeoff = 0.0, velocity = 0.0, distance = 0.0,
-        density = 0.0;
+        density = 0.0, aoi = 0.0;
 
     std::ifstream InputFile;
     InputFile.open(FilenameIn.c_str());
@@ -576,7 +575,6 @@ int main(int argc, char* argv[]) {
         double null;
         bool null2;
         int null3;
-        double aoi;
 
         for (unsigned int j = Velocity.size() - 1; j >= 0; j--) {
           if (depth >= Top[j]) {
@@ -596,7 +594,7 @@ int main(int argc, char* argv[]) {
         il.Start = 0.0;
         il.End = duration;
         il.Duration = duration;
-        il.Displacement = displacement / cos(aoi); // area below the first P wave pulse is divided by angle of incicence. (vertical sensor)
+        il.Displacement = displacement / cos(aoi * M_PI / 180.0); // area below the first P wave pulse is divided by angle of incicence. (vertical sensor)
         il.Incidence = aoi;
         il.Azimuth = azimuth;
         il.TakeOff = takeoff;
@@ -615,6 +613,8 @@ int main(int argc, char* argv[]) {
         InputFile >> duration; // this is NOT used in current context (incorporated into displacement)!!!
         InputFile >> displacement; // this should hold in fact area below the first P-wave velocity pulse
         InputFile >> azimuth;
+        //InputFile >> aoi;
+        aoi = 0.0;
         InputFile >> takeoff;
         InputFile >> velocity;
         InputFile >> distance;
@@ -629,8 +629,8 @@ int main(int argc, char* argv[]) {
         il.Start = 0.0; //tstart;;           /*!< Start time [s].*/
         il.End = duration; //tend;;             /*!< End time [s].*/
         il.Duration = duration; /*!< Duration of first P-wave velocity pulse [s].*/
-        il.Displacement = displacement; /*!< Amplitude of first P-wave displacement pulse [m]. */
-        il.Incidence = 0; //incidence;       /*!< Angle of incidence [deg] (not used here) */
+        il.Displacement = displacement / cos(aoi * M_PI / 180.0); /*!< Amplitude of first P-wave displacement pulse [m]. */
+        il.Incidence = aoi; //incidence;       /*!< Angle of incidence [deg] (not used here) */
         il.Azimuth = azimuth; /*!< Azimuth between station and source [deg]. */
         il.TakeOff = takeoff; /*!< Takeoff angle measured from bottom [deg]. */
         il.Distance = distance; /*!< Distance between station and source [m]. */
