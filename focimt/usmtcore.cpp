@@ -1685,7 +1685,8 @@ void Taquart::UsmtCore::MOM2(bool REALLY, int QualityType) {
     ALF = VEL[i];
 
     /* DONE  5 -c2.4.14 : Problem z kalibracj� (USMTCORE) */
-    HELP = 4.0 * PI * double(RO[i]) * ALF * ALF * ALF * double(R[i]) * USMT_DOWNSCALE;
+    HELP = 4.0 * PI
+        * double(RO[i]) * ALF * ALF * ALF * double(R[i]) * USMT_DOWNSCALE;
 
     //      IF(IW(I).NE.0) GO TO 5
     if (IW[i] == 0) {
@@ -3913,8 +3914,7 @@ void Taquart::UsmtCore::GSOL5(double x[], int &IEXP) {
   //      dimension x(5),ix(5)
   //      double precision xlo(5),xhi(5),xstep(5),six,size,xtry(5),VAL,TRY
   //      DATA SIX,METH/6.D+0,2/
-  double xlo[8], xhi[8], xstep[8], six = 6.0, xtry[8], VAL = 0.0,
-      TRY = 0.0;
+  double xlo[8], xhi[8], xstep[8], six = 6.0, xtry[8], VAL = 0.0, TRY = 0.0;
   //int METH = 2;
   int ix[7];
 
@@ -5039,13 +5039,13 @@ void Taquart::UsmtCore::RDINP(Taquart::SMTInputData &InputData) {
     //RPSTCP[i] = 'Z';
     //PS[i] = ' ';
     InputData.Get(i - 1, InputLine);
-    U[i] = InputLine.Displacement;
+    U[i] = InputLine.Displacement; // this should hold in fact area below the first P-wave velocity pulse
     //ARR[i] = InputLine.Incidence; /* TODO -o3.1.19 : Code for SV and SH is switched off by default. */
-    AZM[i] = InputLine.Azimuth;
-    TKF[i] = InputLine.TakeOff;
-    RO[i] = InputLine.Density;
-    VEL[i] = InputLine.Velocity;
-    R[i] = InputLine.Distance;
+    AZM[i] = InputLine.Azimuth; // Used in ANGGA
+    TKF[i] = InputLine.TakeOff; // Used in ANGGA
+    RO[i] = InputLine.Density; // Used to calculate seismic moment.
+    VEL[i] = InputLine.Velocity; // Used to calculate seismic moment.
+    R[i] = InputLine.Distance; // Used to calculate seismic moment.
     //ACTIV[i] = 1;
   }
 }
