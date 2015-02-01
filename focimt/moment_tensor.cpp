@@ -42,6 +42,8 @@
 #include "usmtcore.h"
 //-----------------------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
 #define TT1D_RAYTRACE_MAXLAY (20)
 #define TT1D_MAXT (100000.0)
 void CalcTravelTime1D(double sta_elev, double depth, double delta,
@@ -61,6 +63,7 @@ void direct1(const int &nl, const double v[], const double vsq[],
     const double thk[], const int& jl, const double& tkj, const double& delta,
     const double& depth, double& tdir, double& u, double& x,
     double &ray_direct);
+//-----------------------------------------------------------------------------
 
 using namespace std;
 
@@ -202,7 +205,7 @@ int main(int argc, char* argv[]) {
         true);
     listOpts.addOption("m", "model",
         "Velocity model file (with extension)                 \n\n"
-            "    Velocity model in hypo71 format. Forces different input file scheme.       \n",
+            "    Velocity model in hypo71 format. Forces different input file format.       \n",
         true);
     listOpts.addOption("v", "version", "Display version number");
 
@@ -538,17 +541,15 @@ int main(int argc, char* argv[]) {
     Taquart::SMTInputData InputData;
 
     const unsigned int Size = 500;
-    int id = 0.0;
+    char id[50];
     double duration = 0.0, displacement = 0.0;
     double azimuth = 0.0, takeoff = 0.0, velocity = 0.0, distance = 0.0,
         density = 0.0;
 
-    // Load input data
     std::ifstream InputFile;
     InputFile.open(FilenameIn.c_str());
     if (VelocityModel) {
       // Reading formatted input file (velocity model format).
-      // TODO: Reading routine.
       double e_northing = 0.0f, e_easting = 0.0f, e_z = 0.0f;
       double s_northing = 0.0f, s_easting = 0.0f, s_z = 0.0f;
       InputFile >> e_northing;
@@ -570,27 +571,26 @@ int main(int argc, char* argv[]) {
             * sqrt(
                 pow(s_northing - e_northing, 2.0)
                     + pow(s_easting - e_easting, 2.0));
-        double azimuth = atan2(s_easting - e_easting, s_northing - e_northing)
-            * 180 / M_PI;
-        double takeoff = 0.0;
-        double velocity = 0.0;
-        double distance = 0.0;
+        azimuth = atan2(s_easting - e_easting, s_northing - e_northing)
+            * 180/ M_PI;
         double null;
         bool null2;
         int null3;
         double aoi;
 
-        for (unsigned int i = Velocity.size() - 1; i >= 0; i--) {
-          if (depth >= Top[i]) velocity = Velocity[i];
-          break;
+        for (unsigned int j = Velocity.size() - 1; j >= 0; j--) {
+          if (depth >= Top[j]) {
+            velocity = Velocity[j];
+            break;
+          }
         }
         CalcTravelTime1D(elevation, depth, epicentral_distance, Top, Velocity,
             null, takeoff, null2, aoi, null3, distance);
 
         // Prepare input line structure.
         Taquart::SMTInputLine il;
-        il.Name = Taquart::FormatFloat("%02.0f", id);
-        il.Id = id;
+        il.Name = Taquart::String(id); /*!< Station name.*/
+        il.Id = i + 1; /*!< Station id number.*/
         il.Component = "ZZ";
         il.MarkerType = "";
         il.Start = 0.0;
@@ -622,8 +622,8 @@ int main(int argc, char* argv[]) {
 
         // Prepare input line structure.
         Taquart::SMTInputLine il;
-        il.Name = Taquart::FormatFloat("%02.0f", id); /*!< Station name.*/
-        il.Id = id; /*!< Station id number.*/
+        il.Name = Taquart::String(id); /*!< Station name.*/
+        il.Id = i + 1; /*!< Station id number.*/
         il.Component = "ZZ"; //"ZZ";       /*!< Component.*/
         il.MarkerType = ""; //"p*ons/p*max";      /*!< Type of the marker used.*/
         il.Start = 0.0; //tstart;;           /*!< Start time [s].*/
